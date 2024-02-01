@@ -32,6 +32,5 @@ public class Main {
         subs(0, 1, 0);
         
         System.out.println(result);
-        br.close();
 	}
 }
