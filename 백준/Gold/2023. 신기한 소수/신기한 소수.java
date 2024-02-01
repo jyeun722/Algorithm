@@ -1,46 +1,34 @@
 import java.io.*;
-import java.util.*;
 
 public class Main {
+    static StringBuilder sb;
+
     static boolean prime(int num) {
+        if (num < 2) return false;
         for (int i = 2; i <= num / 2; i++) {
             if (num % i == 0) return false;
         }
         return true;
     }
 
-    static List<Integer> allPrime(List<Integer> a) {
-        List<Integer> b = new ArrayList<>();
-        for (int n : a) if (prime(n)) b.add(n);
-        return b;
+    static void perm(int num, int cnt, int N) {
+        if (cnt == N) {
+            sb.append(num).append("\n");
+            return;
+        }
+        for (int i = 1; i < 10; i++) {
+            int calNum = 10 * num + i;
+            if (prime(calNum)) perm(calNum, cnt + 1, N);
+        }
     }
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
+        sb = new StringBuilder();
 
         int N = Integer.parseInt(br.readLine());
+        perm(0, 0, N);
 
-        List<Integer> before = new ArrayList<>();
-        for (int i = 2; i < 10; i++) {
-            if (prime(i)) before.add(i);
-        }
-        for (int cnt = 0; cnt < N - 1; cnt++) {
-            List<Integer> after = new ArrayList<>();
-            for (int i = 1; i < 10; i++) {
-                for (int j = 0; j < before.size(); j++) {
-                    int num = Integer.parseInt("" + before.get(j) + i);
-                    after.add(num);
-                }
-            }
-            before = allPrime(after);
-        }
-
-        Collections.sort(before);
-
-        for (int i : before) {
-            sb.append(i).append("\n");
-        }
         System.out.println(sb);
         br.close();
     }
