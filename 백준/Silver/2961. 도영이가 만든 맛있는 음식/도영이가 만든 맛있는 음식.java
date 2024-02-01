@@ -4,17 +4,13 @@ import java.io.*;
 public class Main {
 	static int N, result = Integer.MAX_VALUE;
 	static int[] S, B;
-	static boolean[] ingredients;
 	static void subs(int cnt, int sTaste, int bTaste) {
 		if (cnt == N) {
 			if (sTaste == 1 && bTaste == 0) return;
-			int num = Math.abs(sTaste - bTaste);
-			if (num < result) result = num;
+			result = Math.min(Math.abs(sTaste - bTaste), result);
 			return;
 		}
-		ingredients[cnt] = true;
 		subs(cnt + 1, sTaste * S[cnt], bTaste + B[cnt]);
-		ingredients[cnt] = false;
 		subs(cnt + 1, sTaste, bTaste);
 	}
 	
@@ -33,7 +29,6 @@ public class Main {
         	B[i] = Integer.parseInt(st.nextToken());
         }
         
-        ingredients = new boolean[N];
         subs(0, 1, 0);
         
         System.out.println(result);
