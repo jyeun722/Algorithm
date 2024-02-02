@@ -6,7 +6,7 @@ public class Main {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int N = Integer.parseInt(br.readLine());
 		
-		Queue<Integer> que = new LinkedList<>();
+		Queue<Integer> que = new ArrayDeque<>();
 		for (int i = 1; i < N + 1; i++) que.add(i);
 		
 		boolean throwAway = true;
