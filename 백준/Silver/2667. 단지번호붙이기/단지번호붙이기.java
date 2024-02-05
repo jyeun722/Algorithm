@@ -1,58 +1,63 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    private static int[][] house;
+	static int N;
+	static int[][] map;
+	static int[] dx = {0, 0, 1, -1};
+	static int[] dy = {1, -1, 0, 0};
+	
+	static int cnt = 0;
+	static void dfs(boolean[][] visit, int x, int y) {
+		for (int i = 0; i < dx.length; i++) {
+			int nextX = x + dx[i];
+			int nextY = y + dy[i];
+			
+			if (nextX < 0 || nextY < 0 || nextX >= N || nextY >= N) continue;
+			
+			if (!visit[nextX][nextY] && map[nextX][nextY] != 0) {
+				visit[nextX][nextY] = true;
+				cnt++;
+				dfs(visit, nextX, nextY);
+			}
 
-    public static int bfs(int row, int col, int size, int count) {
-        if (house[row][col] == 1) {
-            count++;
-            house[row][col] = 0;
-        } else return count;
-
-
-        if (row + 1 <= size) count = bfs(row + 1, col, size, count);
-        if (row - 1 > 0) count = bfs(row - 1, col, size, count);
-        if (col + 1 <= size) count = bfs(row, col + 1, size, count);
-        if (col - 1 > 0) count = bfs(row, col - 1, size, count);
-
-        return count;
-    }
-
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringBuilder sb = new StringBuilder();
-
-        int N = Integer.parseInt(br.readLine());
-        house = new int[N + 1][N + 1];
-        for (int i = 1; i < N + 1; i++) {
-            String[] line = br.readLine().split("");
-
-            for (int j = 1; j < N + 1; j++) {
-                house[i][j] = Integer.parseInt(line[j - 1]);
-            }
-        }
-
-        ArrayList<Integer> results = new ArrayList<>();
-        for (int i = 1; i < N + 1; i++) {
-            for (int j = 1; j < N + 1; j++) {
-                if (house[i][j] == 1) {
-                    int result = bfs(i, j, N, 0);
-                    results.add(result);
-                }
-            }
-        }
-
-        Collections.sort(results);
-        sb.append(results.size() + "\n");
-        for (int i = 0; i < results.size(); i++) {
-            sb.append(results.get(i) + "\n");
-        }
-
-        bw.append(sb.toString());
-        bw.flush();
-        bw.close();
-        br.close();
-    }
+		}
+	}
+	
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		
+		List<Integer> results = new ArrayList<>();
+		
+		N = Integer.parseInt(br.readLine());
+		
+		map = new int[N][N];
+		for (int i = 0; i < N; i++) {
+			String home = br.readLine();
+			for (int j = 0; j < N; j++) {
+				map[i][j] = home.charAt(j) - '0';
+			}
+		}
+		
+		boolean[][] visit = new boolean[N][N];
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (map[i][j] != 0 && !visit[i][j]) {
+					cnt = 1;
+					visit[i][j] = true;
+					dfs(visit, i, j);
+					
+					results.add(cnt);
+				}
+			}
+		}
+		
+		Collections.sort(results);
+		sb.append(results.size()).append("\n");
+		for (int i = 0; i < results.size(); i++) {
+			sb.append(results.get(i)).append("\n");
+		}
+		System.out.println(sb);
+	}
 }
