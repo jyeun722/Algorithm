@@ -4,37 +4,30 @@ import java.util.*;
 public class Main {
 	static int N, result; // 총 N명, result: 최소 차이
 	static int[] teamA;
-	static ArrayList<Integer> teamB;
 	static int[][] link;
-	
-	static int powerPlus(int idx, int team) {
-		int sum = 0;
-		if (team == 0) {
-			for (int i = 0; i < N / 2; i++) {
-				sum += link[idx][teamA[i]];
-			}
-		} else {
-			for (int i = 0; i < N / 2; i++) {
-				sum += link[idx][teamB.get(i)];
-			}
-		}
-		return sum;
-	}
-	
+
 	static void comb(int cnt, int start) {
 		if (cnt == N / 2) { // teamA 만드는 함수
-			teamB = new ArrayList<>();
-			for (int i = 0; i < N; i++) teamB.add(i);
+			int[] teamB = new int[N / 2];
+			boolean[] visit = new boolean[N];
 			
 			int sumA = 0;
 			for (int i = 0; i < N / 2; i++) {
-				sumA += powerPlus(teamA[i], 0);
-				teamB.remove((Integer) teamA[i]);
+				for (int j = 0; j < N / 2; j++) {
+					sumA += link[teamA[i]][teamA[j]];
+				}
+				visit[teamA[i]] = true;
+			}
+			
+			for (int i = 0, j = 0; i < N; i++) {
+				if (!visit[i]) teamB[j++] = i;
 			}
 			
 			int sumB = 0;
 			for (int i = 0; i < N / 2; i++) {
-				sumB += powerPlus(teamB.get(i), 1);
+				for (int j = 0; j < N / 2; j++) {
+					sumB += link[teamB[i]][teamB[j]];
+				}
 			}
 			
 			result = Math.min(Math.abs(sumA - sumB), result);
@@ -55,6 +48,7 @@ public class Main {
         
         teamA = new int[N / 2];
         link = new int[N][N];
+        
         for (int i = 0; i < N; i++) {
         	st = new StringTokenizer(br.readLine());
         	for (int j = 0; j < N; j++) {
