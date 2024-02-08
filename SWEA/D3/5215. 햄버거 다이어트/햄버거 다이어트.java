@@ -6,6 +6,7 @@ public class Solution {
 	static int[][] food;
 	
 	static void comb(int cnt, int start, int sumT, int sumK) {
+        if (sumK > L) return;
 		if (sumK <= L) {
 			maxTaste = Math.max(sumT, maxTaste);
 		}
