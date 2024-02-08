@@ -35,10 +35,7 @@ public class Main {
     		N = M;
     		M = tempSize3;
     		
-    		arr = new int[N][M];
-    		for (int i = 0; i < N; i++) {
-    			arr[i] = Arrays.copyOf(temp3[i], M);
-    		}
+    		arr = temp3;
     		break;
     	case 4:
     		int[][] temp4 = new int[M][N];
@@ -52,10 +49,7 @@ public class Main {
     		N = M;
     		M = tempSize4;
     		
-    		arr = new int[N][M];
-    		for (int i = 0; i < N; i++) {
-    			arr[i] = Arrays.copyOf(temp4[i], M);
-    		}
+    		arr = temp4;
     		break;
     	case 5:
     		int[][] xy = {{0, 0}, {0, M / 2}, {N / 2, M / 2}, {N / 2, 0}};
@@ -66,10 +60,7 @@ public class Main {
     				System.arraycopy(arr[i], xy[c][1], temp5[j++], xy2[c][1], M / 2);
     			}
     		}
-    		arr = new int[N][M];
-    		for (int i = 0; i < N; i++) {
-    			arr[i] = Arrays.copyOf(temp5[i], M);
-    		}
+    		arr = temp5;
     		break;
     	case 6:
     		int[][] xy3 = {{0, 0}, {0, M / 2}, {N / 2, M / 2}, {N / 2, 0}};
@@ -80,10 +71,7 @@ public class Main {
     				System.arraycopy(arr[i], xy3[c][1], temp6[j++], xy4[c][1], M / 2);
     			}
     		}
-    		arr = new int[N][M];
-    		for (int i = 0; i < N; i++) {
-    			arr[i] = Arrays.copyOf(temp6[i], M);
-    		}
+    		arr = temp6;
     		break;
     	}
     }
