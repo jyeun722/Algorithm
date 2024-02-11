@@ -7,8 +7,24 @@ public class Solution {
     static double E;
     static int[][] island;
     static boolean[] visit;
-    static int[] parent;
+    // static int[] parent;
 
+    static class Node implements Comparable<Node> {
+        int end;
+        double dis;
+
+        public Node(int end, double dis) {
+            this.end = end;
+            this.dis = dis;
+        }
+
+        @Override
+        public int compareTo(Node o) {
+            return this.dis < o.dis ? -1 : 1;
+        }
+    }
+
+    /*
     static int find(int x) {
         if (parent[x] == x) return x;
         return parent[x] = find(parent[x]);
@@ -21,33 +37,7 @@ public class Solution {
         else parent[x] = y;
     }
 
-    /*
-    static void sumPrim() {
-        PriorityQueue<double[]> que = new PriorityQueue<>(Comparator.comparing(i -> (i[2])));
-        for (int i = 1; i < N; i++)
-            que.offer(new double[]{0, i, Math.pow(island[0][i] - island[0][0], 2)
-                    + Math.pow(island[1][i] - island[1][0], 2)});
-        visit[0] = true;
-
-        while (!que.isEmpty()) {
-            double[] temp = que.poll();
-            int end = (int) temp[1];
-            double L = temp[2];
-
-            if (visit[end]) continue;
-            visit[end] = true;
-            result += L * E;
-
-            for (int i = 1; i < N; i++) {
-                if (i == end || visit[i]) continue;
-                que.offer(new double[]{end, i, Math.pow(island[0][i] - island[0][end], 2)
-                        + Math.pow(island[1][i] - island[1][end], 2)});
-            }
-        }
-    }
-    */
-
-    static void sumKru() {
+        static void sumKru() {
         PriorityQueue<double[]> que = new PriorityQueue<>(Comparator.comparing(i -> (i[2])));
         for (int i = 0; i < N; i++) {
             for (int j = i + 1; j < N; j++) {
@@ -66,7 +56,33 @@ public class Solution {
             }
         }
     }
+	*/
 
+    static void sumPrim() {
+        PriorityQueue<Node> que = new PriorityQueue<>();
+        for (int i = 1; i < N; i++)
+            que.offer(new Node(i, Math.pow(island[0][i] - island[0][0], 2)
+                    + Math.pow(island[1][i] - island[1][0], 2)));
+        visit[0] = true;
+
+        while (!que.isEmpty()) {
+            Node temp = que.poll();
+            int end = temp.end;
+
+            if (visit[end]) continue;
+            visit[end] = true;
+
+            double L = temp.dis;
+            result += L * E;
+
+            for (int i = 1; i < N; i++) {
+                if (i == end || visit[i]) continue;
+                que.offer(new Node(i, Math.pow(island[0][i] - island[0][end], 2)
+                        + Math.pow(island[1][i] - island[1][end], 2)));
+            }
+        }
+    }
+    
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
@@ -77,8 +93,8 @@ public class Solution {
             N = Integer.parseInt(br.readLine()); // 섬의 개수
             result = 0;
 
-            parent = new int[N]; // kru
-            for (int i = 0; i < N; i++) parent[i] = i;
+            // parent = new int[N]; // kru
+            // for (int i = 0; i < N; i++) parent[i] = i;
 
             visit = new boolean[N]; // prim
 
@@ -91,9 +107,9 @@ public class Solution {
             }
 
             E = Double.parseDouble(br.readLine()); // 환경 부담 세율 -> E * L(거리)^2 지불
-//            sumPrim();
-            sumKru();
-
+            sumPrim();
+			// sumKru();
+            
             sb.append("#").append(tc).append(" ").append(Math.round(result)).append("\n");
         }
 
