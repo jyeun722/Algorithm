@@ -1,35 +1,31 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st = new StringTokenizer(br.readLine());
         StringBuilder sb = new StringBuilder();
-
-        int n = Integer.parseInt(st.nextToken());
-        int k = Integer.parseInt(st.nextToken());
-
-        ArrayList<Integer> nums = new ArrayList<>();
-        for (int i = 1; i < n + 1; i++) {
-            nums.add(i);
+        StringTokenizer st;
+        
+        st = new StringTokenizer(br.readLine());
+        int N = Integer.parseInt(st.nextToken());
+        int K = Integer.parseInt(st.nextToken());
+        
+        sb.append("<");
+        ArrayDeque<Integer> que = new ArrayDeque<>();
+        for (int i = 1; i < N + 1; i++) que.offer(i);
+        
+        while (!que.isEmpty()) {
+        	for (int i = 0; i < K - 1; i++) {
+        		que.offer(que.poll());
+        	}
+        	sb.append(que.poll()).append(", ");
         }
-
-        int idx = k - 1;
-        while (true) {
-            int num = nums.remove(idx);
-            sb.append(num + ", ");
-
-            if (nums.size() == 0) break;
-            idx = (idx + k - 1) % nums.size();
-        }
-
-        String result = "<" + sb.toString();
-        result = result.substring(0, result.length() - 2) + ">";
-
-        bw.append(result);
-        bw.flush();
-        bw.close();
-    }
+         
+        String str = sb.toString();
+        str = str.substring(0, str.length() - 2);
+        
+        System.out.println(str + ">");
+        br.close();
+	}
 }
