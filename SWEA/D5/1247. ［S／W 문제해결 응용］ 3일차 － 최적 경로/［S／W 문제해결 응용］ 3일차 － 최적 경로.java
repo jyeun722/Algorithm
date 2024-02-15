@@ -7,7 +7,6 @@ public class Solution {
 	static boolean[] visit;
 	
 	static void perm(int cnt, int x, int y, int sum) {
-        if (sum > min) return;
 		if (cnt == N) {
 			int dis = Math.abs(x - home[0]) + Math.abs(y - home[1]);
 			min = Math.min(min, dis + sum);
@@ -16,8 +15,11 @@ public class Solution {
 		
 		for (int i = 0; i < N; i++) {
 			if (visit[i]) continue;
-			visit[i] = true;
+			
 			int dis = Math.abs(x - custX[i]) + Math.abs(y - custY[i]);
+			if (sum + dis > min) return;
+			
+			visit[i] = true;
 			perm(cnt + 1, custX[i], custY[i], sum + dis);
 			visit[i] = false;
 		}
