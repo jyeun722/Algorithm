@@ -7,7 +7,7 @@ public class Main {
     static int[][] area;
     static List<Fish> fish;
 
-    static class Fish implements Comparable<Fish> {
+    static class Fish {
         int x;
         int y;
         int size;
@@ -16,11 +16,6 @@ public class Main {
             this.x = x;
             this.y = y;
             this.size = size;
-        }
-
-        @Override
-        public int compareTo(Fish o) {
-            return this.x != o.x ? this.x - o.x : this.y - o.y;
         }
     }
 
@@ -74,11 +69,11 @@ public class Main {
         return Integer.MAX_VALUE;
     }
 
-    static void fishOrder() { // 물거기 순서 정해서 잡을건데, 가는길에 다른 애 있으면 돌아가기
-        Collections.sort(fish);
-
+    static void fishOrder() { // 물고기 순서 정해서 잡을건데, 가는길에 다른 애 있으면 돌아가기
         while (!fish.isEmpty()) {
             int minDis = Integer.MAX_VALUE;
+            int row = -1;
+            int col = -1;
             int minIdx = -1;
 
             for (int i = 0; i < fish.size(); i++) {
@@ -90,6 +85,16 @@ public class Main {
                 if (dis < minDis) {
                     minDis = dis;
                     minIdx = i;
+                    row = f.x;
+                    col = f.y;
+                } else if (dis == minDis) {
+                    if (f.y < row) {
+                        row = f.y;
+                        col = f.y;
+                    } else if (f.x == row && f.y < col) {
+                        row = f.y;
+                        col = f.y;
+                    }
                 }
             }
 
