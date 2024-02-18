@@ -5,19 +5,7 @@ public class Main {
     static int N, result, eatCount;
     static int[] shark;
     static int[][] area;
-    static List<Fish> fish;
-
-    static class Fish {
-        int x;
-        int y;
-        int size;
-
-        public Fish(int x, int y, int size) {
-            this.x = x;
-            this.y = y;
-            this.size = size;
-        }
-    }
+    static List<int[]> fish;
 
     static class Shark implements Comparable<Shark> {
         int x;
@@ -77,31 +65,31 @@ public class Main {
             int minIdx = -1;
 
             for (int i = 0; i < fish.size(); i++) {
-                Fish f = fish.get(i);
+                int[] f = fish.get(i);
 
-                if (f.size >= shark[2] || Math.abs(shark[0] - f.x) + Math.abs(shark[1] - f.y) > minDis) continue;
+                if (f[2] >= shark[2] || Math.abs(shark[0] - f[0]) + Math.abs(shark[1] - f[1]) > minDis) continue;
 
-                int dis = move(f.x, f.y);
+                int dis = move(f[0], f[1]);
                 if (dis < minDis) {
                     minDis = dis;
                     minIdx = i;
-                    row = f.x;
-                    col = f.y;
+                    row = f[0];
+                    col = f[1];
                 } else if (dis == minDis) {
-                    if (f.y < row) {
-                        row = f.y;
-                        col = f.y;
-                    } else if (f.x == row && f.y < col) {
-                        row = f.y;
-                        col = f.y;
+                    if (f[0] < row) {
+                        row = f[0];
+                        col = f[1];
+                    } else if (f[0] == row && f[1] < col) {
+                        row = f[0];
+                        col = f[1];
                     }
                 }
             }
 
             if (minIdx == -1) break; // 잡아먹을 수 있는 물고기 없으면 break
             else if (minDis > 0) { // 물고기 먹을 수 있을 때
-                int x = fish.get(minIdx).x;
-                int y = fish.get(minIdx).y;
+                int x = fish.get(minIdx)[0];
+                int y = fish.get(minIdx)[1];
                 area[x][y] = 0; // 먹은 구역 정리
                 shark[0] = x; // 상어 위치 정리
                 shark[1] = y;
@@ -138,7 +126,7 @@ public class Main {
                 if (num == 9) {
                     shark = new int[]{i, j, 2};
                     area[i][j] = 0;
-                } else fish.add(new Fish(i, j, num));
+                } else fish.add(new int[]{i, j, num});
             }
         }
 
