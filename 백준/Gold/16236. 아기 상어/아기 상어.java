@@ -84,7 +84,7 @@ public class Main {
             for (int i = 0; i < fish.size(); i++) {
                 Fish f = fish.get(i);
 
-                if (f.size >= shark[2]) continue;
+                if (f.size >= shark[2] || Math.abs(shark[0] - f.x) + Math.abs(shark[1] - f.y) > minDis) continue;
 
                 int dis = move(f.x, f.y);
                 if (dis < minDis) {
