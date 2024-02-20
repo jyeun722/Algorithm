@@ -45,7 +45,7 @@ public class Solution {
             cells.set(c, cell); // 세포들 다시 세팅
         }
 
-        Collections.sort(cells, (i1, i2) -> i1[4] - i2[4]);
+        Collections.sort(cells, (i1, i2) -> Integer.compare(i1[4], i2[4]));
         // 즉을 때까지 남은시간이 0부터 되도록 정렬
         
         for (int c = 0; c < cells.size(); c++) {
