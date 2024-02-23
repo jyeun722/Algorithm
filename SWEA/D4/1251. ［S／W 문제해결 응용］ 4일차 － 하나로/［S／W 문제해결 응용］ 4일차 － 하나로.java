@@ -2,118 +2,83 @@ import java.io.*;
 import java.util.*;
 
 public class Solution {
-    static int N;
-    static double result;
-    static double E;
-    static int[][] island;
-    static boolean[] visit;
-    // static int[] parent;
+	static int N, cnt; // 섬의 개수
+	static double result;
+	static double E;
+	static int[][] island;
 
-    static class Node implements Comparable<Node> {
-        int end;
-        double dis;
+	static class Node implements Comparable<Node> {
+		int end;
+		double dis;
 
-        public Node(int end, double dis) {
-            this.end = end;
-            this.dis = dis;
-        }
+		public Node(int end, double dis) {
+			this.end = end;
+			this.dis = dis;
+		}
 
-        @Override
-        public int compareTo(Node o) {
-            return this.dis < o.dis ? -1 : 1;
-        }
-    }
+		@Override
+		public int compareTo(Node o) {
+			return this.dis < o.dis ? -1 : 1;
+		}
+	}
 
-    /*
-    static int find(int x) {
-        if (parent[x] == x) return x;
-        return parent[x] = find(parent[x]);
-    }
+	static void sumPrim() {
+		PriorityQueue<Node> que = new PriorityQueue<>();
+		double[] minEdge = new double[N]; // 최소 간선 저장
+		Arrays.fill(minEdge, Double.MAX_VALUE);
+		minEdge[0] = 0;
+		que.offer(new Node(0, minEdge[0]));
+		
+		boolean[] visit = new boolean[N];
 
-    static void union(int x, int y) {
-        x = find(x);
-        y = find(y);
-        if (x < y) parent[y] = x;
-        else parent[x] = y;
-    }
+		while (!que.isEmpty()) {
+			Node temp = que.poll();
+			int minVertex = temp.end;
+			double min = temp.dis;
+			
+			if (visit[minVertex]) continue;
+			visit[minVertex] = true;
+			
+			result += min * E;
+			if (cnt++ == N - 1) break;
 
-        static void sumKru() {
-        PriorityQueue<double[]> que = new PriorityQueue<>(Comparator.comparing(i -> (i[2])));
-        for (int i = 0; i < N; i++) {
-            for (int j = i + 1; j < N; j++) {
-                que.offer(new double[]{i, j, Math.pow(island[0][i] - island[0][j], 2)
-                        + Math.pow(island[1][i] - island[1][j], 2)});
-            }
-        }
+			for (int j = 0; j < N; j++) {
+				double dis = Math.pow(island[0][j] - island[0][minVertex], 2)
+						+ Math.pow(island[1][j] - island[1][minVertex], 2);
+				if (!visit[j] && minEdge[j] > dis) {
+					minEdge[j] = dis;
+					que.offer(new Node(j, minEdge[j]));
+				}
+			}
+		}
+	}
 
-        while (!que.isEmpty()) {
-            double[] temp = que.poll();
-            int x = (int) temp[0];
-            int y = (int) temp[1];
-            if (find(x) != find(y)) {
-                union(x, y);
-                result += temp[2] * E;
-            }
-        }
-    }
-	*/
+	public static void main(String[] args) throws Exception {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st = null;
+		StringBuilder sb = new StringBuilder();
 
-    static void sumPrim() {
-        PriorityQueue<Node> que = new PriorityQueue<>();
-        for (int i = 1; i < N; i++)
-            que.offer(new Node(i, Math.pow(island[0][i] - island[0][0], 2)
-                    + Math.pow(island[1][i] - island[1][0], 2)));
-        visit[0] = true;
+		int T = Integer.parseInt(br.readLine());
+		for (int tc = 1; tc < T + 1; tc++) {
+			N = Integer.parseInt(br.readLine()); // 섬의 개수
+			result = 0;
+			cnt = 0;
+			
+			island = new int[2][N];
+			for (int i = 0; i < 2; i++) {
+				st = new StringTokenizer(br.readLine());
+				for (int j = 0; j < N; j++) {
+					island[i][j] = Integer.parseInt(st.nextToken());
+				}
+			}
 
-        while (!que.isEmpty()) {
-            Node temp = que.poll();
-            int end = temp.end;
+			E = Double.parseDouble(br.readLine()); // 환경 부담 세율 -> E * L(거리)^2 지불
+			sumPrim();
 
-            if (visit[end]) continue;
-            visit[end] = true;
+			sb.append("#").append(tc).append(" ").append(Math.round(result)).append("\n");
+		}
 
-            double L = temp.dis;
-            result += L * E;
-
-            for (int i = 1; i < N; i++) {
-                if (i == end || visit[i]) continue;
-                que.offer(new Node(i, Math.pow(island[0][i] - island[0][end], 2)
-                        + Math.pow(island[1][i] - island[1][end], 2)));
-            }
-        }
-    }
-    
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = null;
-        StringBuilder sb = new StringBuilder();
-
-        int T = Integer.parseInt(br.readLine());
-        for (int tc = 1; tc < T + 1; tc++) {
-            N = Integer.parseInt(br.readLine()); // 섬의 개수
-            result = 0;
-
-            // parent = new int[N]; // kru
-            // for (int i = 0; i < N; i++) parent[i] = i;
-
-            visit = new boolean[N]; // prim
-
-            island = new int[2][N];
-            for (int i = 0; i < 2; i++) {
-                st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < N; j++) {
-                    island[i][j] = Integer.parseInt(st.nextToken());
-                }
-            }
-
-            E = Double.parseDouble(br.readLine()); // 환경 부담 세율 -> E * L(거리)^2 지불
-            sumPrim();
-			// sumKru();
-            
-            sb.append("#").append(tc).append(" ").append(Math.round(result)).append("\n");
-        }
-
-        System.out.println(sb);
-        br.close();
-    }
+		System.out.println(sb);
+		br.close();
+	}
 }
