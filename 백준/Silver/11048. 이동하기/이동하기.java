@@ -15,18 +15,12 @@ public class Main {
 		for (int i = 1; i < N + 1; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 1; j < M + 1; j++) {
-				candy[i][j] = Integer.parseInt(st.nextToken());
+				int num = Integer.parseInt(st.nextToken());
+				candy[i][j] = Math.max(candy[i - 1][j], candy[i][j - 1]) + num;
 			}
 		}
 		
-		int[][] prefix = new int[N + 2][M + 2];
-		for (int i = 1; i < N + 1; i++) {
-			for (int j = 1; j < M + 1; j++) {
-				prefix[i][j] = Math.max(prefix[i - 1][j], prefix[i][j - 1]) + candy[i][j];
-			}
-		}
-		
-		System.out.println(prefix[N][M]);
+		System.out.println(candy[N][M]);
 		br.close();
 	}
 }
