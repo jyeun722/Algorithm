@@ -27,47 +27,53 @@ public class Solution {
 		}
 		return true; // 전체 다 통과하면 true 리턴
 	}
+	
+	static boolean change(int i, int AB) {
+		Arrays.fill(film[fix[i]], AB);
+		
+		if (check(film)) { // 특성이 잘 변화되면
+			result = Math.min(result, i + 1); // result 업데이트
+			return true;
+		}
+		return false;
+	}
 
-	static void ABDfs(int i, int AB, int limit) {
+	static void ABDfs(int i, int limit) {
 		if (i == result - 1)
 			return;
 		
 		int[] t = new int[W]; // 빈 배열에 fix[i] 행의 열 값 저장
 		System.arraycopy(film[fix[i]], 0, t, 0, W);
 		
-		Arrays.fill(film[fix[i]], AB); // fix[i] 행의 열 값에 AB 값으로 특성 변경시키기
-
-		if (check(film)) { // 특성이 잘 변화되면
-			result = Math.min(result, i + 1); // result 업데이트
-		} else if (i + 1 < limit) { // 성능검사 통과하지 못했는데 아직 변화시킬 수 있다면 AB 특성 부여
-			ABDfs(i + 1, 1, limit);
-			ABDfs(i + 1, 0, limit);
-		}
-
+		boolean re = change(i, 1);
+		if (!re && i + 1 < limit) ABDfs(i + 1, limit);
+		
+		change(i, 0);
+		if (!re && i + 1 < limit) ABDfs(i + 1, limit);
+		
 		System.arraycopy(t, 0, film[fix[i]], 0, W); // 배열 되돌리기
 	}
-
-	static void comb(int cnt, int limit, int start) {
-		if (cnt + 1 == result || cnt == limit) {
-			ABDfs(0, 1, limit);
-			ABDfs(0, 0, limit);
-			return;
-		}
-
-		for (int i = start; i < D; i++) {
-			fix[cnt] = i;
-			comb(cnt + 1, limit, i + 1);
-		}
-	}
-
-	static void start() {
-		for (int c = 1; c < D; c++) {
-			if (c >= result) break;
-			fix = new int[c];
-			
-			comb(0, c, 0);
-		}
-	}
+	
+    static void comb(int cnt, int limit, int start) {
+        if (cnt + 1 == result || cnt == limit) {
+            ABDfs(0, limit);
+            return;
+        }
+ 
+        for (int i = start; i < D; i++) {
+            fix[cnt] = i;
+            comb(cnt + 1, limit, i + 1);
+        }
+    }
+ 
+    static void start() {
+        for (int c = 1; c < D; c++) {
+            if (c >= result) break;
+            fix = new int[c];
+             
+            comb(0, c, 0);
+        }
+    }
 
 	public static void main(String[] args) throws Exception {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
