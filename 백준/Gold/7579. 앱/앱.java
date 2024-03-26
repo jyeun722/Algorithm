@@ -26,13 +26,18 @@ public class Main {
         int result = Integer.MAX_VALUE;
         int[][] dp = new int[N + 1][limit + 1];
         for (int k = 1; k < N + 1; k++) {
-            for (int v = 0; v < limit + 1; v++) {
+            for (int v = 0; v < limit + 1; v++) { // 가치
                 if (memory[k][1] > v) {
                     dp[k][v] = dp[k - 1][v];
                 } else {
                     dp[k][v] = Math.max(dp[k - 1][v], dp[k - 1][v - memory[k][1]] + memory[k][0]);
                 }
-                if (dp[k][v] >= M) result = Math.min(v, result);
+                if (dp[k][v] >= M) {
+                    if (result > v) {
+                        result = v;
+                        limit = v;
+                    }
+                }
             }
         }
 
