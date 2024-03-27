@@ -21,12 +21,10 @@ public class Main {
     		far = ver;
     	}
         
-        for (int i = 0; i < tree[ver].size(); i++) {
-        	Node node = tree[ver].get(i);
-            int v = node.vertex;
-            if (!visit[v]) {
-                visit[v] = true;
-                dfs(v, node.value + value);
+        for (Node next : tree[ver]) {
+            if (!visit[next.vertex]) {
+            	visit[ver] = true;
+                dfs(next.vertex, next.value + value);
             }
         }
     }
