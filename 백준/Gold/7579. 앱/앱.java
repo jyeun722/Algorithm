@@ -29,10 +29,7 @@ public class Main {
         for (int n = 1; n < N + 1; n++) {
         	for (int c = limitCost; c - cost[n] >= 0; c--) {
         		dp[c] = Math.max(dp[c], memory[n] + dp[c - cost[n]]);
-        		if (dp[c] >= M && result > c) {
-        			result = c;
-        			limitCost = c;
-        		}
+        		if (dp[c] >= M) result = Math.min(result, c);
         	}
         }
 
