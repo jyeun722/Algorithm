@@ -32,16 +32,16 @@ public class Main {
         }
         Collections.sort(jewels);
         
-        ArrayList<Integer> bags = new ArrayList<>();
+        int[] bags = new int[K];
         for (int i = 0; i < K; i++) {
-        	bags.add(Integer.parseInt(br.readLine()));
+        	bags[i] = Integer.parseInt(br.readLine());
         }
-        Collections.sort(bags);
+        Arrays.sort(bags);
         
         long sum = 0;
         PriorityQueue<Integer> jBags = new PriorityQueue<>(Comparator.reverseOrder());
         for (int i = 0, j = 0; i < K; i++) {
-        	while (j < N && jewels.get(j).wei <= bags.get(i)) {
+        	while (j < N && jewels.get(j).wei <= bags[i]) {
         		jBags.add(jewels.get(j++).value);
         	}
         	
