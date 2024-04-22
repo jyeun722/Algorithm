@@ -29,6 +29,7 @@ public class Main {
     		if (visit[minVertex]) continue;
     		
     		visit[minVertex] = true;
+//    		if (minVertex == n) break; => 왜 넣으면 에러나는지 이해불가
     		
     		for (int j = 1; j < n + 1; j++) {
     			// 방문 안했고, minVertex에서 j로 가는게 0이 아니고(갈 수 있고),
@@ -69,12 +70,6 @@ public class Main {
             	graph[a][b] = d;
             	graph[b][a] = d;
         	}
-        	
-        	// 1. 일반 최적 경로
-        	int INF = 200_000_000;
-        	boolean[] visit = new boolean[n + 1];
-        	int[] dist = new int[n + 1];
-        	Arrays.fill(dist, INF);
 
         	ArrayList<Integer> des = new ArrayList<>();
         	for (int i = 0; i < t; i++) { // 목적지 후보
@@ -83,10 +78,16 @@ public class Main {
         	}
         	Collections.sort(des);
         	
+        	// 1. 일반 최적 경로
+        	int INF = 200_000_000;
+        	boolean[] visit = new boolean[n + 1];
+        	int[] dist = new int[n + 1];
+        	Arrays.fill(dist, INF);
+        	
         	// 그래프, 방문, 누적, 출발지, 개수,
         	dijkstra(graph, visit, dist, s, n);
         	
-        	// 2. 필수 방문
+        	// 2. 필수 방문 => g - h를 무조건 방문하게 하기 위해 음수 넣기
         	int minus = graph[g][h];
         	graph[g][h] = -100;
         	graph[h][g] = -100;
@@ -95,11 +96,12 @@ public class Main {
         	int[] dist2 = new int[n + 1];
         	Arrays.fill(dist2, INF);
         	
-        	dijkstra(graph, visit, dist2, s, n);
+        	dijkstra(graph, visit, dist2, s, n); 
+        	// 다시 원래로 만들기 위해 100과 원래 가중치를 더해주기
         	for (int i = 0; i < n + 1; i++) dist2[i] += 100 + minus;
         	
          	for (int i = 0; i < des.size(); i++) {
-         		int idx = des.get(i);
+         		int idx = des.get(i); // 목적지 중에서 최적 경로 == 필수 경로가 같으면 넣어주기
         		if (dist2[idx] == dist[idx] && dist[idx] < INF) {
         			sb.append(idx).append(" "); 
         		}
