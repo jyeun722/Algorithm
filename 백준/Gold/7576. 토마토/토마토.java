@@ -1,70 +1,88 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int N, M;
-    static int[][] box;
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
 
-    static int dfs(ArrayDeque<int[]> tomatoes) {
-        int day = 0;
-        while (!tomatoes.isEmpty()) {
-            int cnt = 0;
-            day++;
-            int size = tomatoes.size();
-            for (int i = 0; i < size; i++) {
-                int[] tomato = tomatoes.poll();
-
-                for (int d = 0; d < dx.length; d++) {
-                    int nextX = tomato[0] + dx[d];
-                    int nextY = tomato[1] + dy[d];
-
-                    if (nextX < 0 || nextY < 0 || nextX >= N || nextY >= M) continue;
-
-                    if (box[nextX][nextY] == 0) {
-                        box[nextX][nextY] = 1;
-                        tomatoes.offer(new int[]{nextX, nextY});
-                        cnt++;
-                    }
-                }
-            }
-            if (cnt == 0) {
-                for (int i = 0; i < N; i++) {
-                    for (int j = 0; j < M; j++) {
-                        if (box[i][j] == 0) return -1;
-                    }
-                }
-            }
-        }
-        return day - 1;
-    }
-
-    public static void main(String[] args) throws IOException {
+	
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken());
-        N = Integer.parseInt(st.nextToken());
-        int result;
-
-        ArrayDeque<int[]> tomatoes = new ArrayDeque<>();
-
-        box = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < M; j++) {
-                // 1: 익은 토마토, 0: 익지 않은 토마토, -1: 토마토 없는 칸
-                int num = Integer.parseInt(st.nextToken());
-                box[i][j] = num;
-                if (num == 1) tomatoes.offer(new int[]{i, j}); // x, y
-            }
+        StringTokenizer st=new StringTokenizer(br.readLine());
+        
+        int M,N;
+        int max=0;
+        int count=0;
+        M=Integer.parseInt(st.nextToken());
+        N=Integer.parseInt(st.nextToken());
+        
+        int[] di=new int[] {1,0,-1,0};
+        int[] dj=new int[] {0,1,0,-1};
+        Queue<Integer> q=new ArrayDeque<Integer>();
+        int[][] map=new int[N][M];
+        for(int i=0;i<N;i++) {
+        	st=new StringTokenizer(br.readLine());
+        	
+        	for(int j=0;j<M;j++) {
+        		map[i][j]=Integer.parseInt(st.nextToken());
+        		if(map[i][j]==1) {
+        			q.add(i*M+j);
+        		}
+        		if(map[i][j]==0) {
+        			 max++;//다 익어야 하는 수
+        		}
+        		
+        	}
+        }
+        
+        if(count==max) {
+        	System.out.println(0);
+        	return;
+        }
+        
+        int sub,check,ni,nj;
+        int answer=0;
+        
+        while(!q.isEmpty()) {
+        	//System.out.println(answer);
+        	check=q.size();
+        	answer++;
+        	for(int i=0;i<check;i++) {
+        		sub=q.poll();
+        		for(int a=0;a<4;a++){
+        			ni=sub/M+di[a];
+        			nj=sub%M+dj[a];    
+        			if(ni>=0&&ni<N&&nj>=0&&nj<M&&map[ni][nj]==0) {//맵 안쪽이고 토마토가 있으면
+        				map[ni][nj]=1;
+        				q.add(ni*M+nj);
+        				count++;
+        			}
+        		
+        		}
+    			if(count==max) {
+    				q.clear();
+    				break;
+    			}
+        	}
+        	
+//            for(int i=0;i<N;i++) {
+//            	for(int j=0;j<M;j++) {
+//            		System.out.print(map[i][j]);
+//            	}
+//            	System.out.println();
+//            }
         }
 
-        result = dfs(tomatoes);
-
-        System.out.println(result);
-        br.close();
+        if(count!=max) {
+        	//System.out.println("익은 개수: "+count);
+        	//System.out.println("턴 수: "+answer);
+        	System.out.println(-1);
+        	return;
+        }
+        
+//    	System.out.println("익은 개수: "+count);
+//    	System.out.println("턴 수: "+answer);
+        System.out.println(answer);
+        
+        
+        
     }
 }
