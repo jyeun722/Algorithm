@@ -2,130 +2,109 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N, sum;
-    static int result = Integer.MAX_VALUE;
-    static int[] person;
-    static List<Integer>[] link;
-
-    static List<List<Integer>> record = new ArrayList<>();
-
-    static void countMinus(List<Integer> one) {
-        int arrSum = 0;
-        for (int i = 0; i < one.size(); i++) {
-            arrSum += person[one.get(i)];
-        }
-        int minus = Math.abs(sum - arrSum * 2);
-        if (minus < result) result = minus;
-    }
-
-    static boolean checkConnect(List<Integer> one, List<Integer> two) {
-        List<Integer> checkArr = new ArrayList<>();
-        Queue<Integer> que = new LinkedList<>();
-        que.add(two.get(0));
-
-        while (!que.isEmpty()) {
-            int node = que.poll();
-            List<Integer> nodeList = new ArrayList<>(link[node]);
-            nodeList.add(node);
-            for (int i = 0; i < nodeList.size(); i++) {
-                int num = nodeList.get(i);
-                if (one.contains(num)) continue;
-                if (!checkArr.contains(num)) {
-                    checkArr.add(num);
-                    que.add(num);
-                }
-            }
-        }
-        return checkArr.size() == two.size();
-    }
-
-    static boolean equal(List<Integer> arr) {
-        for (List<Integer> l : record) {
-            if (l.size() == arr.size()) {
-                int cnt = 0;
-                for (int a : arr) {
-                    if (l.contains(a)) {
-                        cnt++;
-                    }
-                }
-                if (cnt == l.size()) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    static void com(List<Integer> areaA, int[] arr, boolean[] visit, int start, int r) {
-        if (r == 0) {
-            List<Integer> temp = new ArrayList<>();
-            for (int i = 0; i < N; i++) {
-                if (visit[i]) {
-                    temp.add(arr[i]);
-                }
-            }
-            List<Integer> areaB = new ArrayList<>();
-            for (int i = 0; i < N; i++) {
-                if (!temp.contains(i)) areaB.add(i);
-            }
-
-            boolean go = equal(temp);
-            if (go && checkConnect(areaB, temp) && checkConnect(temp, areaB)) {
-                countMinus(temp);
-            }
-        }
-        for (int i = start; i < N; i++) {
-            if (areaA.contains(i)) continue;
-            visit[i] = true;
-            com(areaA, arr, visit, i + 1, r - 1);
-            visit[i] = false;
-        }
-    }
-
-    static void divide() {
-        int[] arr = new int[N];
-        for (int i = 0; i < N; i++) arr[i] = i;
-
-        for (int i = 0; i < N; i++) {
-            boolean[] visit = new boolean[N];
-            List<Integer> areaA = new ArrayList<>();
-            visit[i] = true;
-            areaA.add(i);
-            for (int j = 0; j < N - 1; j++) {
-                com(areaA, arr, visit, 0, j);
-            }
-        }
-    }
-
-    public static void main(String[] args) throws IOException {
+	static int[] popul;
+	
+	static int N;
+	static int min=Integer.MAX_VALUE;
+	static List<Integer>[] city;
+	static List<Integer>[] groups=new List[2];
+	
+	static boolean v;
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = null;
+        N=Integer.parseInt(br.readLine());
+        popul=new int[N+1];
+        StringTokenizer st=new StringTokenizer(br.readLine());
+        for(int i=1;i<=N;i++) {
+        	popul[i]=Integer.parseInt(st.nextToken());
+        }
+        groups[0]=new ArrayList<>();
+        groups[1]=new ArrayList<>();
+        city=new List[N+1];
+        int size;
+        for(int i=1;i<=N;i++) {
+        	st=new StringTokenizer(br.readLine());
+        	city[i]=new ArrayList<>();
+        	size=Integer.parseInt(st.nextToken());
+        	for(int j=0;j<size;j++) {
+        		city[i].add(Integer.parseInt(st.nextToken()));
+        	}
 
-        N = Integer.parseInt(br.readLine());
-        st = new StringTokenizer(br.readLine());
-        person = new int[N]; // 각 도시별 인구 수 입력
-        sum = 0;
-
-        for (int i = 0; i < N; i++) {
-            int num = Integer.parseInt(st.nextToken());
-            person[i] = num;
-            sum += num;
+        }
+        comb(1);
+        if(min==Integer.MAX_VALUE) {
+        	System.out.println(-1);
+        	return;
+        }
+        System.out.println(min);
+        
+        
+    }
+    
+    static void comb(int pos) {
+    	
+    	if(pos==N+1) {
+    		if(groups[0].size()==0||groups[1].size()==0) {
+    			return;
+    		}
+    		if(check()) {
+    			//System.out.println("연산");
+    			min=Math.min(min,cal());
+    		}
+    		return;
+    	}
+    	
+    	
+    	groups[0].add(pos);
+    	comb(pos+1);
+    	groups[0].remove(groups[0].size()-1);
+    	
+    	groups[1].add(pos);
+    	comb(pos+1);
+    	groups[1].remove(groups[1].size()-1);
+    	
+    }
+    
+    static boolean check() {
+    	//System.out.println("check 실행");
+        if (!isConnected(groups[0])) {
+            return false;
         }
 
-        link = new ArrayList[N];
-        for (int i = 0; i < N; i++) link[i] = new ArrayList<>();
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            int n = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < n; j++) {
-                link[i].add(Integer.parseInt(st.nextToken()) - 1);
+        return isConnected(groups[1]);
+    }
+
+    static boolean isConnected(List<Integer> group) {
+        Queue<Integer> queue = new ArrayDeque<>();
+        boolean[] visited = new boolean[N + 1];
+        queue.add(group.get(0));
+        visited[group.get(0)] = true;
+        int count = 1;
+
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            for (int neighbor : city[node]) {
+                if (group.contains(neighbor) && !visited[neighbor]) {
+                    queue.add(neighbor);
+                    visited[neighbor] = true;
+                    count++;
+                }
             }
         }
-
-        divide();
-        result = result == Integer.MAX_VALUE ? -1 : result;
-        System.out.println(result);
-
-        br.close();
+        return count == group.size();
+    }
+    
+    static int cal() {
+    	int a=0;
+    	for(int sub:groups[0]) {
+    		a+=popul[sub];
+    	}
+    	
+    	int b=0;
+    	for(int sub:groups[1]) {
+    		b+=popul[sub];
+    	}
+    	
+    	return Math.abs(a-b);
     }
 }
