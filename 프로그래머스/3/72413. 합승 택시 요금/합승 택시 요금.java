@@ -29,9 +29,9 @@ class Solution {
             list[i] = new ArrayList<>();
         }
         
-        for(int[] far: fares){
-            list[far[0]].add(new Node(far[1], far[2]));
-            list[far[1]].add(new Node(far[0], far[2]));
+        for(int[] fare: fares){
+            list[fare[0]].add(new Node(fare[1], fare[2]));
+            list[fare[1]].add(new Node(fare[0], fare[2]));
         }
   
         for(int i=1; i<=n; i++){
@@ -54,9 +54,6 @@ class Solution {
         for(int i=1; i<=n; i++){
             dist[i]=INF;
         }
-        
-        int cnt=0;
-        
         PriorityQueue<Node> pq = new PriorityQueue<>();
         dist[start]=0;
         pq.offer(new Node(start,0));
@@ -66,7 +63,6 @@ class Solution {
             int end=cur.end;
             
             if(v[end]) continue;
-            if(++cnt>n) break;
             v[end]=true;
             
             for(Node node:list[end]){
